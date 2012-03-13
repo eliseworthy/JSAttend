@@ -66,20 +66,26 @@ class JSTwitter
   end
 
   def everyones_last_tweet
+
     friends = @client.friends
-    friends = friends.sort_by{|friend| screen_name.downcase}
 
-    friends.each do |friend|
+    friends_array = friends.collect do |friend|
+      {:screen_name => friend.attrs['screen_name'], :text => friend.status['text'], :time => friend.attrs['created_at']}
+    end
 
-      timestamp = friend.status.created_at
+
+    friends_array = friends_array.sort_by{|friend| friend[:screen_name]}
+    puts friends_array.inspect
+    
+    friends_array.each do |friend|
+      timestamp = friend[:time]
       tweet_date = Date.parse(timestamp)
 
-      puts "#{friend.screen_name} said the following at #{tweet_date.strftime("%A, %b %d")}:"
-      puts friends.status.text
+      puts "#{friend[:screen_name]} said the following on #{tweet_date.strftime("%A, %b %d")}:"
+      puts friend[:text]
       puts "" 
     end
   end
-
 end
 
 #Script
