@@ -24,6 +24,7 @@ class JSTwitter
       case command
       when 'q' then puts 'See ya later!'
       when 't' then tweet(message)
+      when 'dm' then dm(parts[1], parts[2..-1].join(" "))  
       else
         puts "What the heck are you talking about with #{command}?"
       end
@@ -37,6 +38,16 @@ class JSTwitter
     else
       @client.update(message)
     end
+  end
+
+  def dm(target, message)
+    screen_names = @client.followers.collect{|follower| follower.screen_name}
+      if screen_names.include? target
+        dm = "d #{target} #{message}"
+        tweet(dm)
+      else
+        puts "You ain't got no love from #{target}"
+      end
   end
 
 end
